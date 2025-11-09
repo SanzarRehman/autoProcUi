@@ -178,7 +178,7 @@ export class TaskService {
    */
   performWorkflowAction(module: string, request: WorkflowPerformRequest): Observable<any> {
     return this.http
-      .post(`${this.apiUrl}/${module}/v1/workflow/perform`, request)
+      .post(`/pro/${module}/v1/workflow/perform`, request)
       .pipe(catchError(this.handleError));
   }
 
