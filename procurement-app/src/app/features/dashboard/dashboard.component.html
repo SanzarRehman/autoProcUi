@@ -1,0 +1,108 @@
+<div class="dashboard-container">
+  <!-- Welcome Hero Section -->
+  <div class="hero-section">
+    <div class="hero-content">
+      <div class="hero-icon">
+        <mat-icon>smart_toy</mat-icon>
+      </div>
+      <h1>Welcome to AI-Powered Procurement System</h1>
+      <p class="hero-subtitle">Intelligent automation for modern procurement workflows</p>
+    </div>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="stats-grid" *ngIf="stats$ | async as stats">
+    <div class="stat-card">
+      <div class="stat-icon ready">
+        <mat-icon>task_alt</mat-icon>
+      </div>
+      <div class="stat-content">
+        <h3>Ready Tasks</h3>
+        <p class="stat-number">{{ stats.readyCount }}</p>
+        <p class="stat-label">Available to claim</p>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon progress">
+        <mat-icon>pending_actions</mat-icon>
+      </div>
+      <div class="stat-content">
+        <h3>In Progress</h3>
+        <p class="stat-number">{{ stats.inProgressCount }}</p>
+        <p class="stat-label">Currently active</p>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon own">
+        <mat-icon>assignment</mat-icon>
+      </div>
+      <div class="stat-content">
+        <h3>My Tasks</h3>
+        <p class="stat-number">{{ stats.ownCount }}</p>
+        <p class="stat-label">Assigned to you</p>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon ai">
+        <mat-icon>psychology</mat-icon>
+      </div>
+      <div class="stat-content">
+        <h3>AI Insights</h3>
+        <p class="stat-number">Active</p>
+        <p class="stat-label">Automation enabled</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Features Section -->
+  <div class="features-section">
+    <h2>System Features</h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <mat-icon>auto_awesome</mat-icon>
+        <h3>Smart Automation</h3>
+        <p>AI-driven workflow automation for faster processing</p>
+      </div>
+
+      <div class="feature-card">
+        <mat-icon>analytics</mat-icon>
+        <h3>Real-time Analytics</h3>
+        <p>Track and monitor procurement activities in real-time</p>
+      </div>
+
+      <div class="feature-card">
+        <mat-icon>security</mat-icon>
+        <h3>Secure & Compliant</h3>
+        <p>Enterprise-grade security with full audit trails</p>
+      </div>
+
+      <div class="feature-card">
+        <mat-icon>speed</mat-icon>
+        <h3>Fast Processing</h3>
+        <p>Streamlined workflows for maximum efficiency</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="quick-actions">
+    <h2>Quick Actions</h2>
+    <div class="actions-grid">
+      <button class="action-btn" routerLink="/tasks/ready">
+        <mat-icon>task_alt</mat-icon>
+        <span>View Ready Tasks</span>
+      </button>
+      <button class="action-btn" routerLink="/tasks/own">
+        <mat-icon>assignment</mat-icon>
+        <span>My Tasks</span>
+      </button>
+      <button class="action-btn" routerLink="/tasks/in-progress">
+        <mat-icon>pending_actions</mat-icon>
+        <span>In Progress</span>
+      </button>
+    </div>
+  </div>
+</div>

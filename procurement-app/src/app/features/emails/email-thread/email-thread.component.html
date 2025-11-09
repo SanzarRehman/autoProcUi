@@ -1,0 +1,155 @@
+<div class="email-thread-container">
+  <!-- Header -->
+  <div class="page-header">
+    <div class="header-content">
+      <div class="title-section">
+        <button mat-icon-button (click)="goBack()" class="back-button">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+        <mat-icon class="page-icon">forum</mat-icon>
+        <div class="title-info">
+          <h1>Email Thread</h1>
+          <span class="po-number">{{ poNumber }}</span>
+        </div>
+      </div>
+      <button mat-raised-button color="primary" (click)="refresh()" [disabled]="loading">
+        <mat-icon>refresh</mat-icon>
+        Refresh
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-container" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>Loading thread...</p>
+  </div>
+
+  <!-- Error State -->
+  <div class="error-container" *ngIf="error && !loading">
+    <mat-icon class="error-icon">error_outline</mat-icon>
+    <h3>{{ error }}</h3>
+    <button mat-raised-button color="primary" (click)="refresh()">
+      <mat-icon>refresh</mat-icon>
+      Try Again
+    </button>
+  </div>
+
+  <!-- Thread Content -->
+  <div class="thread-content" *ngIf="!loading && !error">
+    <!-- Stats Card -->
+    <mat-card class="stats-card" *ngIf="stats">
+      <mat-card-header>
+        <mat-card-title>Thread Statistics</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="stats-grid">
+          <div class="stat-item">
+            <mat-icon>email</mat-icon>
+            <div class="stat-info">
+              <span class="stat-value">{{ stats.totalEmails }}</span>
+              <span class="stat-label">Total Emails</span>
+            </div>
+          </div>
+          <div class="stat-item">
+            <mat-icon>shopping_cart</mat-icon>
+            <div class="stat-info">
+              <span class="stat-value">{{ stats.procurementEmails }}</span>
+              <span class="stat-label">Procurement</span>
+            </div>
+          </div>
+          <div class="stat-item">
+            <mat-icon>smart_toy</mat-icon>
+            <div class="stat-info">
+              <span class="stat-value">{{ stats.systemEmails }}</span>
+              <span class="stat-label">System</span>
+            </div>
+          </div>
+          <div class="stat-item">
+            <mat-icon>people</mat-icon>
+            <div class="stat-info">
+              <span class="stat-value">{{ stats.participantCount }}</span>
+              <span class="stat-label">Participants</span>
+            </div>
+          </div>
+        </div>
+        <div class="participants-list">
+          <strong>Participants:</strong>
+          <mat-chip-set>
+            <mat-chip *ngFor="let participant of stats.participants">
+              {{ participant }}
+            </mat-chip>
+          </mat-chip-set>
+        </div>
+        <div class="date-range">
+          <span><strong>First Email:</strong> {{ formatDate(stats.firstEmail) }}</span>
+          <span><strong>Last Email:</strong> {{ formatDate(stats.lastEmail) }}</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Email Thread Hierarchy -->
+    <div class="thread-hierarchy">
+      <h2>Conversation</h2>
+      <div class="emails-container">
+        <ng-container *ngFor="let node of hierarchy">
+          <ng-container *ngTemplateOutlet="emailNode; context: { $implicit: node, depth: 0 }"></ng-container>
+        </ng-container>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="hierarchy.length === 0">
+      <mat-icon class="empty-icon">inbox</mat-icon>
+      <h3>No emails in this thread</h3>
+    </div>
+  </div>
+</div>
+
+<!-- Recursive Email Node Template -->
+<ng-template #emailNode let-node let-depth="depth">
+  <mat-card class="email-card" [style.margin-left.px]="depth * 40">
+    <mat-card-header>
+      <div class="email-header">
+        <div class="sender-info">
+          <mat-icon [style.color]="getEmailIconColor(node.email)">
+            {{ getEmailIcon(node.email) }}
+          </mat-icon>
+          <div class="sender-details">
+            <strong>{{ node.email.fromEmail }}</strong>
+            <span class="email-meta">
+              to {{ node.email.toEmail }} • {{ formatDate(node.email.receivedAt) }}
+            </span>
+          </div>
+        </div>
+        <div class="email-badges">
+          <mat-chip [style.background-color]="getStateColor(node.email.processingState)" class="state-chip">
+            {{ getStateLabel(node.email.processingState) }}
+          </mat-chip>
+          <mat-chip *ngIf="node.email.systemMessage" class="system-chip">
+            <mat-icon>smart_toy</mat-icon>
+            System
+          </mat-chip>
+        </div>
+      </div>
+    </mat-card-header>
+    <mat-card-content>
+      <h3 class="email-subject">{{ node.email.subject }}</h3>
+      <div class="email-body">{{ node.email.cleanedBody }}</div>
+      <mat-expansion-panel *ngIf="node.email.rawContent !== node.email.cleanedBody" class="raw-content-panel">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <mat-icon>code</mat-icon>
+            View Raw Content
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <pre class="raw-content">{{ node.email.rawContent }}</pre>
+      </mat-expansion-panel>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Render children recursively -->
+  <ng-container *ngFor="let child of node.children">
+    <ng-container *ngTemplateOutlet="emailNode; context: { $implicit: child, depth: depth + 1 }"></ng-container>
+  </ng-container>
+</ng-template>

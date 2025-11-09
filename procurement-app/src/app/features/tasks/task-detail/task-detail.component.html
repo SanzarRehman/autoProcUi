@@ -1,0 +1,144 @@
+<div class="task-detail-container">
+  <!-- Loading Indicator -->
+  <app-loading-spinner 
+    *ngIf="loading" 
+    message="Loading task details...">
+  </app-loading-spinner>
+
+  <!-- Error Message -->
+  <div *ngIf="error && !loading" class="error-container">
+    <p class="error-message">{{ error }}</p>
+    <button class="btn btn-primary" (click)="refreshTaskDetails()">Retry</button>
+  </div>
+
+  <!-- Task Details -->
+  <div *ngIf="!loading && !error && taskActions" class="task-content">
+    <!-- Task Information Card -->
+    <div class="task-info-card">
+      <div class="card-header">
+        <h2>{{ taskActions.label }}</h2>
+        <div class="header-actions">
+          <!-- Claim Button -->
+          <button 
+            *ngIf="taskActions.claimable" 
+            class="btn btn-success"
+            [disabled]="performingAction"
+            (click)="onClaimTask()">
+            {{ performingAction ? 'Processing...' : 'Claim Task' }}
+          </button>
+          
+          <!-- Release Button -->
+          <button 
+            *ngIf="taskActions.releasable" 
+            class="btn btn-warning"
+            [disabled]="performingAction"
+            (click)="onReleaseTask()">
+            {{ performingAction ? 'Processing...' : 'Release Task' }}
+          </button>
+          
+          <!-- Edit Button -->
+          <button 
+            *ngIf="isEditable()" 
+            class="btn btn-info"
+            [disabled]="performingAction"
+            (click)="onEditTask()">
+            Edit
+          </button>
+        </div>
+      </div>
+      
+      <div class="task-info-grid">
+        <div class="info-item">
+          <span class="info-label">Module:</span>
+          <span class="info-value">{{ module }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Key:</span>
+          <span class="info-value">{{ key }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Reference:</span>
+          <span class="info-value">{{ ref }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Assignee:</span>
+          <span class="info-value">{{ taskActions.assignee }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Step:</span>
+          <span class="info-value">{{ taskActions.name }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dynamic Action Buttons Section (if any) -->
+    <div class="actions-section" *ngIf="taskActions.actions && taskActions.actions.length > 0">
+      <h3>Workflow Actions</h3>
+      <div class="action-buttons">
+        <!-- Dynamic Action Buttons from API -->
+        <button 
+          *ngFor="let action of taskActions.actions"
+          [class]="action.css"
+          [disabled]="performingAction"
+          (click)="onActionClick(action)">
+          {{ performingAction ? 'Processing...' : action.label }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Process Diagram Section -->
+    <div class="diagram-section" *ngIf="processDiagramUrl">
+      <h3>Process Diagram</h3>
+      <div class="diagram-container">
+        <img [src]="processDiagramUrl" alt="Process Diagram" class="process-diagram" />
+      </div>
+    </div>
+
+    <!-- History Timeline Section -->
+    <div class="history-section">
+      <h3>Task History</h3>
+      <div class="history-timeline">
+        <div *ngIf="taskHistory.length === 0" class="no-history">
+          No history available for this task.
+        </div>
+        
+        <div *ngFor="let entry of taskHistory; let last = last" class="timeline-entry">
+          <div class="timeline-marker"></div>
+          <div class="timeline-content" [class.last-entry]="last">
+            <div class="timeline-header">
+              <h4 class="step-name">{{ entry.stepName }}</h4>
+              <span *ngIf="entry.actionLabel" class="action-label">{{ entry.actionLabel }}</span>
+            </div>
+            
+            <div class="timeline-details">
+              <div class="detail-item">
+                <span class="detail-label">Assignee:</span>
+                <span class="detail-value">{{ entry.assignee }}</span>
+              </div>
+              
+              <div class="detail-item">
+                <span class="detail-label">Started:</span>
+                <span class="detail-value">{{ formatDate(entry.startAt) }}</span>
+              </div>
+              
+              <div class="detail-item" *ngIf="entry.endAt">
+                <span class="detail-label">Ended:</span>
+                <span class="detail-value">{{ formatDate(entry.endAt) }}</span>
+              </div>
+              
+              <div class="detail-item" *ngIf="entry.updateBy">
+                <span class="detail-label">Updated By:</span>
+                <span class="detail-value">{{ entry.updateBy }}</span>
+              </div>
+            </div>
+            
+            <div *ngIf="entry.remarks" class="remarks">
+              <span class="remarks-label">Remarks:</span>
+              <p class="remarks-text">{{ entry.remarks }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

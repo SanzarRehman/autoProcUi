@@ -1,0 +1,317 @@
+.sidenav-container {
+  height: 100vh;
+  width: 100%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.sidenav {
+  width: 280px;
+  background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+  border-right: none;
+  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.3);
+
+  .sidenav-header {
+    padding: 32px 24px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+
+    h2 {
+      margin: 0;
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #ffffff;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      letter-spacing: 0.5px;
+    }
+  }
+
+  mat-nav-list {
+    padding: 16px 12px;
+
+    .nav-section-title {
+      padding: 20px 16px 8px 16px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    a {
+      margin: 6px 0;
+      border-radius: 12px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      color: #e2e8f0 !important; // Light text for dark background
+      padding: 14px 16px;
+      position: relative;
+      overflow: hidden;
+      font-size: 15px;
+      font-weight: 400;
+
+      &::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 4px;
+        background: linear-gradient(180deg, #6366f1 0%, #8b5cf6 100%);
+        transform: scaleY(0);
+        transition: transform 0.3s ease;
+      }
+
+      span[matlistitemtitle] {
+        color: #e2e8f0 !important; // Ensure text is visible
+      }
+
+      &:hover {
+        background: rgba(99, 102, 241, 0.2);
+        color: #ffffff !important;
+        transform: translateX(4px);
+
+        span[matlistitemtitle] {
+          color: #ffffff !important;
+        }
+
+        mat-icon {
+          color: #c7d2fe !important;
+          transform: scale(1.1);
+        }
+      }
+
+      &.active-link {
+        background: linear-gradient(135deg, rgba(99, 102, 241, 0.3) 0%, rgba(139, 92, 246, 0.3) 100%);
+        color: #ffffff !important;
+        font-weight: 500;
+        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+
+        span[matlistitemtitle] {
+          color: #ffffff !important;
+        }
+
+        &::before {
+          transform: scaleY(1);
+        }
+
+        mat-icon {
+          color: #c7d2fe !important;
+        }
+      }
+
+      mat-icon {
+        color: #cbd5e1 !important; // Light icon color
+        transition: all 0.3s ease;
+        margin-right: 8px;
+      }
+    }
+  }
+}
+
+.toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%) !important;
+  box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+  height: 70px;
+  padding: 0 24px;
+
+  .menu-button {
+    display: inline-flex; // Always show menu button for drawer
+    margin-right: 16px;
+    color: white;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.15);
+      transform: rotate(90deg);
+    }
+  }
+
+  .mobile-title {
+    font-size: 20px;
+    font-weight: 600;
+    display: none;
+    color: white;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+
+  .toolbar-spacer {
+    flex: 1 1 auto;
+  }
+
+  .user-button {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-transform: none;
+    font-size: 14px;
+    padding: 10px 20px;
+    border-radius: 50px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    color: white;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    mat-icon:first-child {
+      font-size: 28px;
+      width: 28px;
+      height: 28px;
+    }
+
+    .username {
+      max-width: 150px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-weight: 500;
+    }
+
+    .dropdown-icon {
+      margin-left: -4px;
+      font-size: 20px;
+    }
+  }
+}
+
+.user-info {
+  padding: 16px 20px;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border-bottom: 1px solid #e2e8f0;
+
+  .user-name {
+    font-weight: 600;
+    font-size: 15px;
+    color: #1e293b;
+    margin-bottom: 4px;
+  }
+
+  .user-email {
+    font-size: 13px;
+    color: #64748b;
+  }
+}
+
+.content-container {
+  padding: 32px;
+  min-height: calc(100vh - 70px);
+  background: linear-gradient(135deg, #f8fafc 0%, #e0e7ff 100%);
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 200px;
+    background: linear-gradient(180deg, rgba(99, 102, 241, 0.05) 0%, transparent 100%);
+    pointer-events: none;
+  }
+}
+
+// Tablet breakpoint (600px - 1024px)
+@media (max-width: 1024px) and (min-width: 600px) {
+  .sidenav {
+    width: 260px;
+  }
+
+  .content-container {
+    padding: 24px;
+  }
+
+  .toolbar {
+    height: 64px;
+    padding: 0 20px;
+
+    .user-button .username {
+      max-width: 120px;
+    }
+  }
+}
+
+// Mobile breakpoint (< 600px)
+@media (max-width: 599px) {
+  .sidenav {
+    width: 280px;
+    max-width: 85vw;
+  }
+
+  .toolbar {
+    height: 60px;
+    padding: 0 16px;
+
+    .mobile-title {
+      display: block;
+      font-size: 18px;
+    }
+
+    .user-button {
+      gap: 8px;
+      padding: 8px 16px;
+
+      .username {
+        display: none;
+      }
+
+      .dropdown-icon {
+        display: none;
+      }
+    }
+  }
+
+  .content-container {
+    padding: 16px;
+    min-height: calc(100vh - 60px);
+  }
+
+  .sidenav-header {
+    padding: 24px 20px !important;
+
+    h2 {
+      font-size: 1.3rem !important;
+    }
+  }
+}
+
+// Extra small mobile (< 400px)
+@media (max-width: 399px) {
+  .content-container {
+    padding: 12px;
+  }
+
+  .sidenav {
+    width: 260px;
+  }
+
+  .toolbar {
+    padding: 0 12px;
+  }
+}
+
+// Custom scrollbar for sidebar
+.sidenav {
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+  }
+}

@@ -1,0 +1,81 @@
+<div class="email-list-container">
+  <!-- Header -->
+  <div class="page-header">
+    <div class="header-content">
+      <div class="title-section">
+        <mat-icon class="page-icon">email</mat-icon>
+        <h1>Email Threads</h1>
+      </div>
+      <button mat-raised-button color="primary" (click)="refresh()" [disabled]="loading">
+        <mat-icon>refresh</mat-icon>
+        Refresh
+      </button>
+    </div>
+  </div>
+
+  <!-- Filters and Search -->
+  <div class="controls-section">
+    <div class="filters">
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Filter</mat-label>
+        <mat-select [(ngModel)]="selectedFilter" (selectionChange)="onFilterChange()">
+          <mat-option value="recent">Recent (7 days)</mat-option>
+          <mat-option value="procurement">Procurement Only</mat-option>
+          <mat-option value="pending">Pending Response</mat-option>
+          <mat-option value="completed">Completed</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="search-field">
+        <mat-label>Search emails</mat-label>
+        <input matInput [(ngModel)]="searchQuery" (keyup.enter)="onSearch()" placeholder="Search by subject, sender, or content">
+        <button mat-icon-button matSuffix (click)="onSearch()" [disabled]="loading">
+          <mat-icon>search</mat-icon>
+        </button>
+      </mat-form-field>
+    </div>
+
+    <div class="results-info" *ngIf="!loading">
+      <span class="count">{{ emails.length }} email{{ emails.length !== 1 ? 's' : '' }}</span>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-container" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>Loading emails...</p>
+  </div>
+
+  <!-- Error State -->
+  <div class="error-container" *ngIf="error && !loading">
+    <mat-icon class="error-icon">error_outline</mat-icon>
+    <h3>{{ error }}</h3>
+    <button mat-raised-button color="primary" (click)="refresh()">
+      <mat-icon>refresh</mat-icon>
+      Try Again
+    </button>
+  </div>
+
+  <!-- Email Grid -->
+  <div class="grid-container" *ngIf="!loading && !error">
+    <ag-grid-angular
+      class="ag-theme-quartz"
+      [theme]="theme"
+      [rowData]="emails"
+      [columnDefs]="columnDefs"
+      [defaultColDef]="defaultColDef"
+      [pagination]="true"
+      [paginationPageSize]="20"
+      [domLayout]="'normal'"
+      (gridReady)="onGridReady($event)"
+      style="height: 600px; width: 100%;">
+    </ag-grid-angular>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="!loading && !error && emails.length === 0">
+    <mat-icon class="empty-icon">inbox</mat-icon>
+    <h3>No emails found</h3>
+    <p>Try adjusting your filters or search criteria</p>
+  </div>
+</div>

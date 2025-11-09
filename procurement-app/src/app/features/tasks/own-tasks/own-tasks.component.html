@@ -1,0 +1,44 @@
+<div class="own-tasks-container">
+  <div class="header">
+    <div class="header-title">
+      <mat-icon class="header-icon">assignment</mat-icon>
+      <h2>My Tasks</h2>
+    </div>
+    <button class="btn-refresh" (click)="refresh()" [disabled]="loading">
+      <mat-icon class="btn-icon">refresh</mat-icon>
+      <span>Refresh</span>
+    </button>
+  </div>
+
+  <!-- Filter Section -->
+  <div class="filter-section">
+    <mat-form-field appearance="outline" class="filter-field">
+      <mat-label>Filter by Code</mat-label>
+      <input matInput [(ngModel)]="filterCode" placeholder="e.g., ProcurementAutomation" (keyup.enter)="applyFilter()">
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+    <button mat-raised-button color="primary" (click)="applyFilter()" class="btn-apply">
+      <mat-icon>filter_list</mat-icon>
+      Apply Filter
+    </button>
+    <button mat-stroked-button (click)="clearFilter()" class="btn-clear" *ngIf="filterCode">
+      <mat-icon>clear</mat-icon>
+      Clear
+    </button>
+  </div>
+
+  <div class="error-message" *ngIf="error">
+    <mat-icon class="error-icon">warning</mat-icon>
+    <span>{{ error }}</span>
+    <button class="btn-retry" (click)="refresh()">
+      <mat-icon>refresh</mat-icon>
+      <span>Retry</span>
+    </button>
+  </div>
+
+  <app-task-grid
+    [dataSource]="fetchOwnTasks"
+    [loading]="loading"
+    (viewTask)="onViewTask($event)">
+  </app-task-grid>
+</div>

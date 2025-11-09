@@ -1,0 +1,115 @@
+<div class="gl-list-container">
+  <!-- Header -->
+  <div class="page-header">
+    <div class="header-content">
+      <div class="title-section">
+        <mat-icon class="page-icon">account_balance</mat-icon>
+        <h1>General Ledger</h1>
+      </div>
+      <button mat-raised-button color="primary" (click)="refresh()" [disabled]="loading">
+        <mat-icon>refresh</mat-icon>
+        Refresh
+      </button>
+    </div>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="stats-section" *ngIf="stats">
+    <div class="stat-card">
+      <div class="stat-icon" style="background: #eef2ff;">
+        <mat-icon style="color: #6366f1;">receipt</mat-icon>
+      </div>
+      <div class="stat-content">
+        <div class="stat-value">{{ stats.totalEntries }}</div>
+        <div class="stat-label">Total Entries</div>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon" style="background: #dcfce7;">
+        <mat-icon style="color: #10b981;">attach_money</mat-icon>
+      </div>
+      <div class="stat-content">
+        <div class="stat-value">${{ stats.totalAmount.toFixed(2) }}</div>
+        <div class="stat-label">Total Amount</div>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon" style="background: #f3e8ff;">
+        <mat-icon style="color: #8b5cf6;">swap_horiz</mat-icon>
+      </div>
+      <div class="stat-content">
+        <div class="stat-value">{{ stats.entriesByType['ALLOCATION'] || 0 }}</div>
+        <div class="stat-label">Allocations</div>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon" style="background: #d1fae5;">
+        <mat-icon style="color: #10b981;">shopping_bag</mat-icon>
+      </div>
+      <div class="stat-content">
+        <div class="stat-value">{{ stats.entriesByType['PURCHASE'] || 0 }}</div>
+        <div class="stat-label">Purchases</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="controls-section">
+    <div class="filters">
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Filter by Type</mat-label>
+        <mat-select [(ngModel)]="selectedFilter" (selectionChange)="onFilterChange()">
+          <mat-option value="all">All Transactions</mat-option>
+          <mat-option value="ALLOCATION">Allocations</mat-option>
+          <mat-option value="PURCHASE">Purchases</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="results-info" *ngIf="!loading">
+      <span class="count">{{ entries.length }} entr{{ entries.length !== 1 ? 'ies' : 'y' }}</span>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-container" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>Loading GL entries...</p>
+  </div>
+
+  <!-- Error State -->
+  <div class="error-container" *ngIf="error && !loading">
+    <mat-icon class="error-icon">error_outline</mat-icon>
+    <h3>{{ error }}</h3>
+    <button mat-raised-button color="primary" (click)="refresh()">
+      <mat-icon>refresh</mat-icon>
+      Try Again
+    </button>
+  </div>
+
+  <!-- GL Grid -->
+  <div class="grid-container" *ngIf="!loading && !error">
+    <ag-grid-angular
+      class="ag-theme-quartz"
+      [theme]="theme"
+      [rowData]="entries"
+      [columnDefs]="columnDefs"
+      [defaultColDef]="defaultColDef"
+      [pagination]="true"
+      [paginationPageSize]="20"
+      [domLayout]="'normal'"
+      (gridReady)="onGridReady($event)"
+      style="height: 600px; width: 100%;">
+    </ag-grid-angular>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="!loading && !error && entries.length === 0">
+    <mat-icon class="empty-icon">account_balance</mat-icon>
+    <h3>No GL entries found</h3>
+    <p>Try adjusting your filters</p>
+  </div>
+</div>

@@ -1,0 +1,70 @@
+<div class="inventory-container">
+  <div class="header">
+    <div class="header-title">
+      <mat-icon class="header-icon">inventory</mat-icon>
+      <h2>Inventory Management</h2>
+    </div>
+    <div class="header-actions">
+      <mat-form-field class="type-filter">
+        <mat-select [(value)]="selectedType" (selectionChange)="onTypeChange()">
+          <mat-option value="all">All Types</mat-option>
+          <mat-option value="laptop">Laptops</mat-option>
+          <mat-option value="monitor">Monitors</mat-option>
+          <mat-option value="accessory">Accessories</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <button class="btn-refresh" (click)="refresh()" [disabled]="loading">
+        <mat-icon class="btn-icon">refresh</mat-icon>
+        <span>Refresh</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="stats-grid" *ngIf="stats">
+    <div class="stat-card">
+      <mat-icon class="stat-icon">inventory_2</mat-icon>
+      <div class="stat-content">
+        <h3>Total Items</h3>
+        <p class="stat-number">{{ stats.totalItems }}</p>
+      </div>
+    </div>
+    <div class="stat-card">
+      <mat-icon class="stat-icon">shopping_bag</mat-icon>
+      <div class="stat-content">
+        <h3>Total Quantity</h3>
+        <p class="stat-number">{{ stats.totalQuantity }}</p>
+      </div>
+    </div>
+    <div class="stat-card">
+      <mat-icon class="stat-icon">attach_money</mat-icon>
+      <div class="stat-content">
+        <h3>Total Value</h3>
+        <p class="stat-number">${{ stats.totalValue.toFixed(2) }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="error-message" *ngIf="error">
+    <mat-icon class="error-icon">warning</mat-icon>
+    <span>{{ error }}</span>
+    <button class="btn-retry" (click)="refresh()">
+      <mat-icon>refresh</mat-icon>
+      <span>Retry</span>
+    </button>
+  </div>
+
+  <div class="grid-container">
+    <ag-grid-angular
+      style="width: 100%; height: 600px;"
+      [theme]="theme"
+      [rowData]="items"
+      [columnDefs]="columnDefs"
+      [defaultColDef]="defaultColDef"
+      [pagination]="true"
+      [paginationPageSize]="20"
+      [animateRows]="false"
+      (gridReady)="onGridReady($event)">
+    </ag-grid-angular>
+  </div>
+</div>

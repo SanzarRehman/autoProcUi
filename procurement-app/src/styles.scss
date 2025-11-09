@@ -1,0 +1,219 @@
+/* You can add global styles to this file, and also import other style files */
+
+/* Angular Material theming */
+@use '@angular/material' as mat;
+
+@include mat.core();
+
+// Modern color palette - Deep Purple & Teal
+$modern-primary: mat.m2-define-palette((
+  50: #f3e5f5,
+  100: #e1bee7,
+  200: #ce93d8,
+  300: #ba68c8,
+  400: #ab47bc,
+  500: #6366f1, // Main primary color - Indigo
+  600: #5b21b6,
+  700: #512da8,
+  800: #4527a0,
+  900: #311b92,
+  A100: #b388ff,
+  A200: #7c4dff,
+  A400: #651fff,
+  A700: #6200ea,
+  contrast: (
+    50: rgba(black, 0.87),
+    100: rgba(black, 0.87),
+    200: rgba(black, 0.87),
+    300: white,
+    400: white,
+    500: white,
+    600: white,
+    700: white,
+    800: white,
+    900: white,
+    A100: rgba(black, 0.87),
+    A200: white,
+    A400: white,
+    A700: white,
+  )
+));
+
+$modern-accent: mat.m2-define-palette((
+  50: #e0f2f1,
+  100: #b2dfdb,
+  200: #80cbc4,
+  300: #4db6ac,
+  400: #26a69a,
+  500: #14b8a6, // Main accent color - Teal
+  600: #0d9488,
+  700: #0f766e,
+  800: #115e59,
+  900: #134e4a,
+  A100: #a7ffeb,
+  A200: #64ffda,
+  A400: #1de9b6,
+  A700: #00bfa5,
+  contrast: (
+    50: rgba(black, 0.87),
+    100: rgba(black, 0.87),
+    200: rgba(black, 0.87),
+    300: rgba(black, 0.87),
+    400: white,
+    500: white,
+    600: white,
+    700: white,
+    800: white,
+    900: white,
+    A100: rgba(black, 0.87),
+    A200: rgba(black, 0.87),
+    A400: rgba(black, 0.87),
+    A700: white,
+  )
+));
+
+$modern-warn: mat.m2-define-palette(mat.$m2-red-palette);
+
+// Define the modern theme
+$procurement-theme: mat.m2-define-light-theme((
+  color: (
+    primary: $modern-primary,
+    accent: $modern-accent,
+    warn: $modern-warn,
+  ),
+  typography: mat.m2-define-typography-config(
+    $font-family: 'Roboto, "Helvetica Neue", sans-serif',
+  ),
+  density: 0,
+));
+
+@include mat.all-component-themes($procurement-theme);
+
+/* AG Grid v34+ uses Theming API - no CSS imports needed */
+
+/* Global styles */
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+  overflow-x: hidden;
+  background: #f8fafc;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+// Modern scrollbar
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #6366f1 0%, #8b5cf6 100%);
+  border-radius: 5px;
+
+  &:hover {
+    background: linear-gradient(180deg, #4f46e5 0%, #7c3aed 100%);
+  }
+}
+
+/* Responsive utilities */
+.mobile-only {
+  display: none;
+}
+
+.desktop-only {
+  display: block;
+}
+
+@media (max-width: 599px) {
+  .mobile-only {
+    display: block;
+  }
+
+  .desktop-only {
+    display: none;
+  }
+}
+
+/* Ensure proper touch scrolling on mobile */
+@media (max-width: 599px) {
+  * {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+  }
+
+  body {
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+  }
+}
+
+/* AG Grid responsive improvements */
+@media (max-width: 599px) {
+  .ag-theme-alpine {
+    // Ensure grid is scrollable on mobile
+    .ag-root-wrapper {
+      overflow-x: auto;
+    }
+
+    // Improve touch targets
+    .ag-cell-focus,
+    .ag-cell {
+      border: none !important;
+    }
+
+    // Compact pagination controls
+    .ag-paging-panel {
+      font-size: 12px;
+      padding: 8px;
+    }
+  }
+}
+
+/* Snackbar styles */
+.error-snackbar {
+  background-color: #f44336 !important;
+  color: white !important;
+
+  .mat-mdc-snack-bar-label {
+    color: white !important;
+  }
+
+  .mat-mdc-button {
+    color: white !important;
+  }
+}
+
+.success-snackbar {
+  background-color: #4caf50 !important;
+  color: white !important;
+
+  .mat-mdc-snack-bar-label {
+    color: white !important;
+  }
+
+  .mat-mdc-button {
+    color: white !important;
+  }
+}
+
+.info-snackbar {
+  background-color: #2196f3 !important;
+  color: white !important;
+
+  .mat-mdc-snack-bar-label {
+    color: white !important;
+  }
+
+  .mat-mdc-button {
+    color: white !important;
+  }
+}
