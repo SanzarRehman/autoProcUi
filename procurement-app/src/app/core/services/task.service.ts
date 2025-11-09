@@ -196,6 +196,28 @@ export class TaskService {
   }
 
   /**
+   * Gets procurement order details by PO number
+   * @param poNumber The PO number
+   * @returns Observable of the procurement order
+   */
+  getProcurementOrder(poNumber: string): Observable<any> {
+    return this.http
+      .get(`/pro/api/procurement/${poNumber}`)
+      .pipe(catchError(this.handleError));
+  }
+
+  /**
+   * Gets RRF HTML content
+   * @param poNumber The PO number
+   * @returns Observable of the HTML content as text
+   */
+  getRRFContent(poNumber: string): Observable<string> {
+    return this.http
+      .get(`/pro/api/rrf/${poNumber}/content`, { responseType: 'text' })
+      .pipe(catchError(this.handleError));
+  }
+
+  /**
    * Centralized error handler for all service methods
    * @param error The error object from HTTP request
    * @returns Observable that throws a formatted error

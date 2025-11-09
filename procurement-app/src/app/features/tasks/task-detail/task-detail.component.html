@@ -18,6 +18,23 @@
       <div class="card-header">
         <h2>{{ taskActions.label }}</h2>
         <div class="header-actions">
+          <!-- RRF Buttons (if ref is a PO number) -->
+          <button 
+            *ngIf="ref && ref.startsWith('PO-')" 
+            class="btn btn-secondary"
+            (click)="viewRRF()">
+            <mat-icon>visibility</mat-icon>
+            View RRF
+          </button>
+          
+          <button 
+            *ngIf="ref && ref.startsWith('PO-')" 
+            class="btn btn-secondary"
+            (click)="downloadRRF()">
+            <mat-icon>download</mat-icon>
+            Download RRF
+          </button>
+          
           <!-- Claim Button -->
           <button 
             *ngIf="taskActions.claimable" 
@@ -67,6 +84,53 @@
         <div class="info-item">
           <span class="info-label">Step:</span>
           <span class="info-value">{{ taskActions.name }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Procurement Order Details -->
+    <div class="procurement-order-card" *ngIf="procurementOrder">
+      <h3>Procurement Order Details</h3>
+      <div class="order-details-grid">
+        <div class="detail-item">
+          <span class="detail-label">PO Number:</span>
+          <span class="detail-value po-number">{{ procurementOrder.poNumber }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Item Name:</span>
+          <span class="detail-value">{{ procurementOrder.itemName }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Item Type:</span>
+          <span class="detail-value">{{ procurementOrder.itemType }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Quantity:</span>
+          <span class="detail-value">{{ procurementOrder.quantity }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Amount:</span>
+          <span class="detail-value amount">${{ procurementOrder.amount.toFixed(2) }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Status:</span>
+          <span class="detail-value">
+            <span class="status-badge" [class]="'status-' + procurementOrder.status.toLowerCase()">
+              {{ procurementOrder.status }}
+            </span>
+          </span>
+        </div>
+        <div class="detail-item full-width">
+          <span class="detail-label">Requester:</span>
+          <span class="detail-value">{{ procurementOrder.requesterEmail }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Requester Role:</span>
+          <span class="detail-value">{{ procurementOrder.requesterRole }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Created At:</span>
+          <span class="detail-value">{{ formatDate(procurementOrder.createdAt) }}</span>
         </div>
       </div>
     </div>
@@ -142,3 +206,22 @@
     </div>
   </div>
 </div>
+
+<!-- RRF Modal -->
+<div class="rrf-modal-overlay" *ngIf="showRRFModal" (click)="closeRRFModal()">
+  <div class="rrf-modal-container" (click)="$event.stopPropagation()">
+    <div class="rrf-modal-header">
+      <h3>Request for Requisition (RRF)</h3>
+      <button class="btn-close" (click)="closeRRFModal()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    <div class="rrf-modal-content">
+      <div *ngIf="loadingRRF" class="loading-rrf">
+        <div class="spinner"></div>
+        <p>Loading RRF...</p>
+      </div>
+      <div *ngIf="!loadingRRF && rrfContent" [innerHTML]="rrfContent" class="rrf-html-content"></div>
+    </div>
+  </div>
+</div>""

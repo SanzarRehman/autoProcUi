@@ -1,6 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
+import { MatIconModule } from '@angular/material/icon';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { TaskService } from '../../../core/services/task.service';
 import { TaskActionsResponse, TaskHistory, TaskAction, WorkflowPerformRequest } from '../../../core/models/task.model';
 import { LoadingSpinnerComponent } from '../../../shared/components/loading-spinner/loading-spinner.component';
@@ -12,7 +14,7 @@ import { ErrorHandlerService } from '../../../core/services/error-handler.servic
 @Component({
   selector: 'app-task-detail',
   standalone: true,
-  imports: [CommonModule, LoadingSpinnerComponent],
+  imports: [CommonModule, MatIconModule, LoadingSpinnerComponent],
   templateUrl: './task-detail.component.html',
   styleUrls: ['./task-detail.component.scss']
 })
@@ -25,6 +27,11 @@ export class TaskDetailComponent implements OnInit, OnDestroy {
   taskHistory: TaskHistory[] = [];
   processDiagramUrl: string | null = null;
   loadingDiagram = false;
+  procurementOrder: any = null;
+  loadingOrder = false;
+  showRRFModal = false;
+  rrfContent: SafeHtml | null = null;
+  loadingRRF = false;
   
   loading = false;
   error: string | null = null;
@@ -33,6 +40,7 @@ export class TaskDetailComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private taskService: TaskService,
+    private sanitizer: DomSanitizer,
     private errorHandler: ErrorHandlerService
   ) {}
 
@@ -45,6 +53,11 @@ export class TaskDetailComponent implements OnInit, OnDestroy {
       
       // Fetch task actions and history
       this.loadTaskDetails();
+      
+      // Load procurement order details if ref is a PO number
+      if (this.ref && this.ref.startsWith('PO-')) {
+        this.loadProcurementOrder();
+      }
     });
   }
 
@@ -103,6 +116,72 @@ export class TaskDetailComponent implements OnInit, OnDestroy {
         this.loadingDiagram = false;
       }
     });
+  }
+
+  /**
+   * Loads procurement order details
+   */
+  private loadProcurementOrder(): void {
+    this.loadingOrder = true;
+    
+    this.taskService.getProcurementOrder(this.ref).subscribe({
+      next: (order) => {
+        this.procurementOrder = order;
+        this.loadingOrder = false;
+      },
+      error: (error) => {
+        console.error('Failed to load procurement order:', error);
+        this.loadingOrder = false;
+      }
+    });
+  }
+
+  /**
+   * Opens RRF in a modal popup
+   */
+  viewRRF(): void {
+    if (this.ref) {
+      this.loadingRRF = true;
+      this.showRRFModal = true;
+      
+      // Fetch the HTML content and display in modal
+      this.taskService.getRRFContent(this.ref).subscribe({
+        next: (content) => {
+          // Remove markdown code block markers if present
+          let cleanedContent = content;
+          if (content.startsWith('```html')) {
+            cleanedContent = content.replace(/^```html\s*/, '').replace(/\s*```$/, '');
+          }
+          
+          // Sanitize and set the HTML content
+          this.rrfContent = this.sanitizer.bypassSecurityTrustHtml(cleanedContent);
+          this.loadingRRF = false;
+        },
+        error: (error) => {
+          console.error('Failed to load RRF content:', error);
+          this.errorHandler.handleError(error, 'Failed to load RRF content');
+          this.loadingRRF = false;
+          this.showRRFModal = false;
+        }
+      });
+    }
+  }
+
+  /**
+   * Closes the RRF modal
+   */
+  closeRRFModal(): void {
+    this.showRRFModal = false;
+    this.rrfContent = null;
+  }
+
+  /**
+   * Downloads RRF as PDF
+   */
+  downloadRRF(): void {
+    if (this.ref) {
+      window.open(`/pro/api/rrf/${this.ref}/pdf`, '_blank');
+    }
   }
 
   /**
