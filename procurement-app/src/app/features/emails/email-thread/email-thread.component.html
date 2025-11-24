@@ -135,12 +135,26 @@
     </mat-card-header>
     <mat-card-content>
       <h3 class="email-subject">{{ node.email.subject }}</h3>
-      <div class="email-body">{{ node.email.cleanedBody }}</div>
+      
+      <!-- Toggle button for HTML/Text view -->
+      <div class="view-toggle" *ngIf="node.email.rawContent !== node.email.cleanedBody">
+        <button mat-stroked-button (click)="toggleHtmlView(node.email.id)" class="btn-toggle">
+          <mat-icon>{{ isHtmlViewEnabled(node.email.id) ? 'text_fields' : 'html' }}</mat-icon>
+          {{ isHtmlViewEnabled(node.email.id) ? 'Show Plain Text' : 'Show HTML Version' }}
+        </button>
+      </div>
+      
+      <!-- Plain text view -->
+      <div class="email-body" *ngIf="!isHtmlViewEnabled(node.email.id)">{{ node.email.cleanedBody }}</div>
+      
+      <!-- HTML view -->
+      <div class="email-body-html" *ngIf="isHtmlViewEnabled(node.email.id)" [innerHTML]="getSanitizedHtml(node.email.rawContent)"></div>
+      
       <mat-expansion-panel *ngIf="node.email.rawContent !== node.email.cleanedBody" class="raw-content-panel">
         <mat-expansion-panel-header>
           <mat-panel-title>
             <mat-icon>code</mat-icon>
-            View Raw Content
+            View Raw Source
           </mat-panel-title>
         </mat-expansion-panel-header>
         <pre class="raw-content">{{ node.email.rawContent }}</pre>

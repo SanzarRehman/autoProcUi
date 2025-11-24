@@ -10,7 +10,6 @@ import { TaskGridComponent } from '../../../shared/components/task-grid/task-gri
 import { TaskService } from '../../../core/services/task.service';
 import { TaskStatsService } from '../../../core/services/task-stats.service';
 import { Task, TaskResponse } from '../../../core/models/task.model';
-import { LoadingSpinnerComponent } from '../../../shared/components/loading-spinner/loading-spinner.component';
 import { ErrorHandlerService } from '../../../core/services/error-handler.service';
 
 /**
@@ -27,8 +26,7 @@ import { ErrorHandlerService } from '../../../core/services/error-handler.servic
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    TaskGridComponent,
-    LoadingSpinnerComponent
+    TaskGridComponent
   ],
   templateUrl: './own-tasks.component.html',
   styleUrls: ['./own-tasks.component.scss']

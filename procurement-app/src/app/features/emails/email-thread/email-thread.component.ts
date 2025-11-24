@@ -6,6 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { EmailService } from '../../../core/services/email.service';
 import { EmailThread, EmailThreadHierarchy, ThreadStats } from '../../../core/models/email.model';
 
@@ -29,11 +30,13 @@ export class EmailThreadComponent implements OnInit {
   stats: ThreadStats | null = null;
   loading = false;
   error: string | null = null;
+  showHtmlContent: Map<number, boolean> = new Map();
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private emailService: EmailService
+    private emailService: EmailService,
+    private sanitizer: DomSanitizer
   ) {}
 
   ngOnInit(): void {
@@ -99,5 +102,26 @@ export class EmailThreadComponent implements OnInit {
 
   getEmailIconColor(email: EmailThread): string {
     return email.systemMessage ? '#6366f1' : '#64748b';
+  }
+
+  /**
+   * Toggle between HTML and plain text view for an email
+   */
+  toggleHtmlView(emailId: number): void {
+    this.showHtmlContent.set(emailId, !this.showHtmlContent.get(emailId));
+  }
+
+  /**
+   * Check if HTML view is enabled for an email
+   */
+  isHtmlViewEnabled(emailId: number): boolean {
+    return this.showHtmlContent.get(emailId) || false;
+  }
+
+  /**
+   * Sanitize HTML content for safe rendering
+   */
+  getSanitizedHtml(rawContent: string): SafeHtml {
+    return this.sanitizer.bypassSecurityTrustHtml(rawContent);
   }
 }
